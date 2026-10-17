@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.py[cod]
+instance/
+backups/
+*.db
+*.db-shm
+*.db-wal
+master.key*
+license_private*.pem
+license_private*.key
+.env

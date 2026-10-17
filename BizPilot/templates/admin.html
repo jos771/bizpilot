@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Admin · BizPilot</title>
+  <link rel="icon" href="/static/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body class="appbody">
+  <header class="admin-top">
+    <div class="wrap">
+      <strong>BizPilot admin</strong>
+      <form method="post" action="/admin/logout">
+        <input type="hidden" name="csrf" value="{{ session['csrf'] }}">
+        <button class="btn btn-ghost btn-sm" type="submit">Log out</button>
+      </form>
+    </div>
+  </header>
+  <main class="admin-main wrap">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, message in messages %}<div class="flash {{ category }}" role="status">{{ message }}</div>{% endfor %}
+    {% endwith %}
+
+    <h1>Customers</h1>
+    <div class="stat-row">
+      <div class="stat"><b>{{ stats.total }}</b><span>Accounts</span></div>
+      <div class="stat"><b>{{ stats.active }}</b><span>Paying</span></div>
+      <div class="stat"><b>{{ stats.trial }}</b><span>On trial</span></div>
+      <div class="stat"><b>{{ stats.expired }}</b><span>Expired</span></div>
+      <div class="stat"><b>{{ stats.suspended }}</b><span>Suspended</span></div>
+    </div>
+
+    <h2>All accounts</h2>
+    {% if customers %}
+    <div class="table-scroll">
+      <table class="tbl">
+        <thead><tr><th>Business</th><th>Email</th><th>Type</th><th>Joined</th><th>Status</th><th>Until</th><th>Sales</th><th>Last sync</th><th>Actions</th></tr></thead>
+        <tbody>
+        {% for c in customers %}
+          <tr>
+            <td>{{ c.a.business_name }}</td>
+            <td>{{ c.a.email }}</td>
+            <td>{{ c.a.business_type }}</td>
+            <td>{{ c.a.created_at|dt }}</td>
+            <td><span class="pill {{ c.info.status }}">{{ c.info.status }}</span></td>
+            <td>{{ (c.info.valid_until // 1000)|dt }}</td>
+            <td>{{ c.a.tx_count }}</td>
+            <td>{{ c.a.last_sync|ago }}</td>
+            <td>
+              <form method="post" action="/admin/customer/{{ c.a.id }}/grant">
+                <input type="hidden" name="csrf" value="{{ session['csrf'] }}">
+                <input type="number" name="days" value="30" min="1" max="3660" style="width:70px" aria-label="Days to add">
+                <button class="btn btn-green btn-sm" type="submit">Add days</button>
+              </form>
+              <form method="post" action="/admin/customer/{{ c.a.id }}/suspend" data-confirm="{{ 'Reactivate' if c.a.suspended else 'Suspend' }} {{ c.a.email }}?">
+                <input type="hidden" name="csrf" value="{{ session['csrf'] }}">
+                <button class="btn btn-ghost on-light btn-sm" type="submit">{{ 'Reactivate' if c.a.suspended else 'Suspend' }}</button>
+              </form>
+              <form method="post" action="/admin/customer/{{ c.a.id }}/reset" data-confirm="Create a new temporary password for {{ c.a.email }}? Their devices will be logged out.">
+                <input type="hidden" name="csrf" value="{{ session['csrf'] }}">
+                <button class="btn btn-ghost on-light btn-sm" type="submit">Reset password</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}<p>No accounts yet. They appear here as soon as someone registers.</p>{% endif %}
+
+    <h2>Recent security events</h2>
+    <div class="table-scroll">
+      <table class="tbl">
+        <thead><tr><th>When</th><th>Event</th><th>Account</th><th>IP</th></tr></thead>
+        <tbody>
+        {% for e in events %}<tr><td>{{ e.ts|ago }}</td><td>{{ e.kind }}</td><td>{{ e.email or '-' }}</td><td>{{ e.ip }}</td></tr>{% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Licence keys</h2>
+    <p>Make keys on your own computer with <code>license_tool.py</code> and send them to customers who have paid. The server only checks them; it cannot make them.</p>
+
+    <h2>What customers see</h2>
+    <form class="form-grid" method="post" action="/admin/settings">
+      <input type="hidden" name="csrf" value="{{ session['csrf'] }}">
+      <label class="field">Business name (legal pages)<input type="text" name="company_name" value="{{ settings.company_name }}" maxlength="80"></label>
+      <label class="field">Support contact (email or WhatsApp, shown in Terms and Privacy)<input type="text" name="support_contact" value="{{ settings.support_contact }}" maxlength="200"></label>
+      <label class="field">Pricing text<textarea name="price_text">{{ settings.price_text }}</textarea></label>
+      <label class="field">How to pay (shown inside the app when the trial ends)<textarea name="pay_info">{{ settings.pay_info }}</textarea></label>
+      <button class="btn btn-green" type="submit" style="justify-self:start">Save</button>
+    </form>
+  </main>
+  <script src="/static/js/admin.js"></script>
+</body>
+</html>

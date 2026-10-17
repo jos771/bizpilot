@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% if page == 'terms' %}Terms of use{% elif page == 'privacy' %}Privacy policy{% else %}Page not found{% endif %} · BizPilot</title>
+  <meta name="theme-color" content="#0f3d33">
+  <link rel="icon" href="/static/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body class="appbody">
+  <header class="doc-header"><div class="wrap"><a class="logo" href="/app">BizPilot</a></div></header>
+  <main class="doc">
+  {% if page == 'notfound' %}
+    <h1>Page not found</h1>
+    <p>That page doesn't exist. <a href="/app">Open the app</a>.</p>
+  {% else %}
+    {% if not contact %}
+    <div class="draft-note"><strong>Draft.</strong> Have these terms reviewed for your business and country, and add your contact details in the admin panel before you take customers.</div>
+    {% endif %}
+
+    {% if page == 'terms' %}
+    <h1>Terms of use</h1>
+    <p class="muted">These terms apply to {{ company }} ("we", "us") and the BizPilot service.</p>
+    <h2>1. What BizPilot is</h2>
+    <p>BizPilot is a record-keeping tool for small businesses. It helps you note sales and expenses and see totals. It is not accounting, tax or legal advice, and you are responsible for the accuracy of what you enter.</p>
+    <h2>2. Free trial and subscription</h2>
+    <ul>
+      <li>Every new account starts with a {{ trial_days }}-day free trial.</li>
+      <li>To keep recording after the trial you need an active subscription. You pay us and receive a licence key (or pay online where that is offered); the paid time is added to your account.</li>
+      <li>Subscriptions are paid in advance for the period shown. Refunds are at our discretion unless the law says otherwise.</li>
+      <li>When your subscription ends you can still open the app and download your records. You cannot add new records until you renew.</li>
+    </ul>
+    <h2>3. Your account</h2>
+    <p>Keep your password private. You are responsible for activity on your account. Tell us straight away if you think someone else has access.</p>
+    <h2>4. Your data</h2>
+    <p>Your records belong to you. We store an encrypted backup so you can use more than one device and recover your data. You can download your records at any time and delete your account and all its records from Settings. After a subscription ends we keep your data for at least 90 days so you can return or export it.</p>
+    <h2>5. Acceptable use</h2>
+    <p>Do not use BizPilot for anything unlawful, to harm others, to try to break into the service or other people's accounts, or to share your account or licence key with other businesses.</p>
+    <h2>6. Availability</h2>
+    <p>The app is built to work offline and keeps a copy of your records on your own device. The backup and sync service may sometimes be unavailable. We do not promise uninterrupted service. Download your records regularly to keep your own copies.</p>
+    <h2>7. Limits of responsibility</h2>
+    <p>The service is provided as it is. To the extent the law allows, we are not responsible for lost profit or indirect loss, and our total responsibility for any claim is limited to the amount you paid us in the 3 months before it.</p>
+    <h2>8. Changes and ending</h2>
+    <p>We may update these terms and will say so in the app or on this page. You can stop using BizPilot at any time. We may suspend accounts that break these terms.</p>
+    <h2>9. Contact</h2>
+    <p>{{ contact or 'Contact details will be added here.' }}</p>
+    {% else %}
+    <h1>Privacy policy</h1>
+    <p class="muted">How {{ company }} handles information in BizPilot.</p>
+    <h2>What we collect</h2>
+    <ul>
+      <li><strong>Account details:</strong> your email address, business name, business type, and a password (stored only as a one-way hash).</li>
+      <li><strong>Your records:</strong> the sales, expenses, services, prices and notes you enter.</li>
+      <li><strong>Technical information:</strong> security events such as logins, with the IP address and time, kept for 90 days to protect accounts.</li>
+    </ul>
+    <h2>How it is protected</h2>
+    <p>Your records are encrypted on our server (AES-256-GCM) with a key unique to your account, and that key is itself protected by a master key kept apart from the database. Data travels between your device and our server over an encrypted connection. Your email address, business name, business type and record dates are stored unencrypted so we can run the service. Records are also kept on your own device, so protect your device with a screen lock.</p>
+    <h2>Why we use it</h2>
+    <p>To run your account, back up and sync your records, manage your trial and subscription, keep the service secure, and contact you about your account. We do not sell your information and we do not show adverts.</p>
+    <h2>Who can see it</h2>
+    <p>People who can log in to your account. We only look at your records if you ask us for support or if the law requires it.</p>
+    <h2>How long we keep it</h2>
+    <p>While your account exists, and at least 90 days after a subscription ends. You can delete your account and all its records yourself from Settings, or ask us to.</p>
+    <h2>Contact</h2>
+    <p>{{ contact or 'Contact details will be added here.' }}</p>
+    {% endif %}
+  {% endif %}
+  </main>
+</body>
+</html>

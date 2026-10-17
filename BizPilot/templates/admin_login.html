@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Admin log in · BizPilot</title>
+  <link rel="icon" href="/static/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/static/app.css">
+</head>
+<body class="appbody">
+  <form class="login-card" method="post" action="/admin/login">
+    <h1>BizPilot admin</h1>
+    {% if error %}<p class="form-error" role="alert">{{ error }}</p>{% endif %}
+    <label class="field">Admin password
+      <input type="password" name="password" autocomplete="current-password" autofocus required>
+    </label>
+    <button class="btn btn-green" type="submit">Log in</button>
+  </form>
+</body>
+</html>
